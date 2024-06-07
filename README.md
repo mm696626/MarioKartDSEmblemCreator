@@ -1,7 +1,7 @@
 # MarioKartDSEmblemCreator
 
 ### Mario Kart DS Emblem Creator
-* A tool to resize QR codes to be scanned for the Island Scan feature primarily for Citra (which unfortunately ceased development)
+* A tool to create custom emblems to be used in Mario Kart DS
 
 ### Setup to get this tool working
 * Have any PNG or JPG image on your computer
