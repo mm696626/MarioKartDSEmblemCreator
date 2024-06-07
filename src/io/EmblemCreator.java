@@ -33,6 +33,18 @@ public class EmblemCreator {
         return createEmblemImage(emblemImage, sourceImage);
     }
 
+    public BufferedImage createEmblem(BufferedImage bufferedImage) {
+        BufferedImage emblemImage = new BufferedImage(PIXELS, PIXELS, BufferedImage.TYPE_INT_ARGB); //new image
+
+        if (bufferedImage == null) {
+            //this is if the image couldn't be read
+            return null;
+        }
+
+        bufferedImage = removeTransparentBackground(bufferedImage);
+        return createEmblemImage(emblemImage, bufferedImage);
+    }
+
     private BufferedImage removeTransparentBackground(BufferedImage image) {
         BufferedImage newImage = new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_INT_ARGB); //new image
         Graphics2D g2d = newImage.createGraphics();

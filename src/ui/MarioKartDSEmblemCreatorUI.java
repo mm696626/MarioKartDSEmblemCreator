@@ -64,10 +64,12 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
             EmblemCreator emblemCreator = new EmblemCreator();
             BufferedImage emblem = emblemCreator.createEmblem(imagePath);
 
-            File emblemFile = new File("emblem.png");
+            imagePath = imagePath.substring(0, imagePath.lastIndexOf("."));
+            File emblemFile = new File(imagePath + "Emblem.png");
 
             try {
                 ImageIO.write(emblem, "png", emblemFile);
+                JOptionPane.showMessageDialog(this, "Your Emblem has been successfully created");
             }
             catch (Exception ex) {
                 return;
@@ -75,7 +77,22 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
         }
 
         if (e.getSource() == cropAndGenerateEmblem) {
+            JFileChooser fileChooser = new JFileChooser();
+            FileFilter imageFileFilter = new FileNameExtensionFilter("Image File","jpg", "jpeg", "png", "JPG", "JPEG", "PNG");
+            fileChooser.setFileFilter(imageFileFilter);
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int response = fileChooser.showOpenDialog(null);
+            if (response == JFileChooser.APPROVE_OPTION) {
+                JOptionPane.showMessageDialog(this, "Please click the top left of your emblem image");
 
+                imagePath = fileChooser.getSelectedFile().getAbsolutePath();
+                ImageCropper imageCropper = new ImageCropper(imagePath);
+                imageCropper.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                imageCropper.pack();
+                imageCropper.setVisible(true);
+            } else {
+                return;
+            }
 
         }
     }
