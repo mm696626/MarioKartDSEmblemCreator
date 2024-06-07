@@ -19,8 +19,7 @@ public class EmblemCreator {
         try {
             sourceImage = ImageIO.read(new File(imagePath));
         }
-        catch(Exception e)
-        {
+        catch (Exception e) {
             //already handled it below
         }
 

@@ -59,8 +59,7 @@ public class ImageCropper extends JFrame implements MouseListener {
                 try {
                     emblemImage = ImageIO.read(new File(imagePath));
                 }
-                catch(Exception ex)
-                {
+                catch (Exception ex) {
                     return;
                 }
 
@@ -87,13 +86,11 @@ public class ImageCropper extends JFrame implements MouseListener {
         if (emblemImage != null) {
             imagePath = imagePath.substring(0, imagePath.lastIndexOf("."));
             File imageFile = new File(imagePath + "Emblem.png");
-            try
-            {
+            try {
                 ImageIO.write(emblemImage, "png", imageFile); //this is where the image is saved to
                 JOptionPane.showMessageDialog(this, "Your Emblem has been successfully created");
             }
-            catch(Exception ex)
-            {
+            catch (Exception ex) {
                 return;
             }
         }
