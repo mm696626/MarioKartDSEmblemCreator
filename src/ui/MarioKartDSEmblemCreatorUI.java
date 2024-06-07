@@ -1,11 +1,16 @@
 package ui;
 
+import io.EmblemCreator;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener {
 
@@ -53,6 +58,18 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
             if (response == JFileChooser.APPROVE_OPTION) {
                 imagePath = fileChooser.getSelectedFile().getAbsolutePath();
             } else {
+                return;
+            }
+
+            EmblemCreator emblemCreator = new EmblemCreator();
+            BufferedImage emblem = emblemCreator.createEmblem(imagePath);
+
+            File emblemFile = new File("emblem.png");
+
+            try {
+                ImageIO.write(emblem, "png", emblemFile);
+            }
+            catch (Exception ex) {
                 return;
             }
         }
