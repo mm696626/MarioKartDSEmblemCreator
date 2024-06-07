@@ -64,7 +64,7 @@ public class ImageCropper extends JFrame implements MouseListener {
                     return;
                 }
 
-                saveCroppedResizedQRCode(emblemImage);
+                saveCroppedEmblem(emblemImage);
                 setVisible(false);
             }
             else {
@@ -75,7 +75,7 @@ public class ImageCropper extends JFrame implements MouseListener {
         }
     }
 
-    private void saveCroppedResizedQRCode(BufferedImage croppedImage) {
+    private void saveCroppedEmblem(BufferedImage croppedImage) {
         int croppedImageWidth = coordinates[2] - coordinates[0];
         int croppedImageHeight = coordinates[3] - coordinates[1];
 
@@ -99,12 +99,12 @@ public class ImageCropper extends JFrame implements MouseListener {
         }
     }
 
-    private BufferedImage copyCroppedImage(BufferedImage qrCodeImage, int croppedImageWidth, int croppedImageHeight) {
+    private BufferedImage copyCroppedImage(BufferedImage croppedImage, int croppedImageWidth, int croppedImageHeight) {
         //copy cropped image, so the original isn't modified
-        qrCodeImage = qrCodeImage.getSubimage(coordinates[0], coordinates[1], croppedImageWidth, croppedImageHeight);
-        BufferedImage copyOfImage = new BufferedImage(qrCodeImage.getWidth(), qrCodeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        croppedImage = croppedImage.getSubimage(coordinates[0], coordinates[1], croppedImageWidth, croppedImageHeight);
+        BufferedImage copyOfImage = new BufferedImage(croppedImage.getWidth(), croppedImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics g = copyOfImage.createGraphics();
-        g.drawImage(qrCodeImage, 0, 0, null);
+        g.drawImage(croppedImage, 0, 0, null);
         return copyOfImage;
     }
 

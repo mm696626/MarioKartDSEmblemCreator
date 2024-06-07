@@ -12,7 +12,7 @@ public class EmblemCreator {
     private static final int PIXELS = 32;
 
     public BufferedImage createEmblem(String imagePath) {
-        BufferedImage sourceImage = null; //QR code image
+        BufferedImage sourceImage = null; //source image
         BufferedImage emblemImage = new BufferedImage(PIXELS, PIXELS, BufferedImage.TYPE_INT_ARGB); //new image
 
 
