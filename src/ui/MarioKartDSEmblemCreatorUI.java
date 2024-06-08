@@ -192,7 +192,7 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
         while (inputStream.hasNextLine()) {
             String line = inputStream.nextLine();
 
-            if (index < EmblemConstants.COLOR_NAMES.length && line.contains(EmblemConstants.COLOR_NAMES[index])) {
+            if (index < EmblemConstants.COLORS.length && line.contains(EmblemConstants.COLOR_NAMES[index])) {
                 String settingValue = line.split("=")[1];
                 colorSettingToggled.get(index).setSelected(Boolean.parseBoolean(settingValue));
                 index++;

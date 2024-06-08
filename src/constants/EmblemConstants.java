@@ -24,5 +24,5 @@ public class EmblemConstants {
     public static final Color YELLOW = new Color(251, 250, 84);
 
     public static final Color[] COLORS = {LIGHT_GREEN, BLACK, DARK_GREEN, WHITE, CYAN, GRAY, BLUE, BROWN, PURPLE, RED, MAGENTA, ORANGE, PINK, TAN, YELLOW};
-    public static final String[] COLOR_NAMES = {"Light Green", "Black", "Dark Green", "White", "Cyan", "Gray", "Blue", "Brown", "Purple", "Red", "Magenta", "Orange", "Pink", "Tan", "Yellow"};
+    public static final String[] COLOR_NAMES = {"Light Green", "Black", "Dark Green", "White", "Cyan", "Gray", "Blue", "Brown", "Purple", "Red", "Magenta", "Orange", "Pink", "Tan", "Yellow", "No Background Color"};
 }

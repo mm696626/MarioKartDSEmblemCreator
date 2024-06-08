@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class EmblemCreator {
 
     private static final int PIXELS = 32;
+    private int backgroundColorIndex;
 
     public BufferedImage createEmblem(String imagePath, ArrayList<JCheckBox> colorSettingToggled, JComboBox transparentBackgroundColor) {
         BufferedImage sourceImage = null; //source image
@@ -47,25 +48,34 @@ public class EmblemCreator {
 
     private BufferedImage removeTransparentBackground(BufferedImage image, JComboBox transparentBackgroundColor) {
         BufferedImage newImage = new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_INT_ARGB); //new image
+        backgroundColorIndex = transparentBackgroundColor.getSelectedIndex();
+
         Graphics2D g2d = newImage.createGraphics();
-        g2d.setPaint(EmblemConstants.COLORS[transparentBackgroundColor.getSelectedIndex()]);
-        g2d.fillRect(0, 0, newImage.getWidth(), newImage.getHeight());
+
+        if (!EmblemConstants.COLOR_NAMES[backgroundColorIndex].equals("No Background Color")) {
+            g2d.setPaint(EmblemConstants.COLORS[backgroundColorIndex]);
+            g2d.fillRect(0, 0, newImage.getWidth(), newImage.getHeight());
+        }
+
         g2d.drawImage(image, 0, 0, null);
+
         return newImage;
     }
 
     private BufferedImage createEmblemImage(BufferedImage emblemImage, BufferedImage sourceImage, ArrayList<JCheckBox> colorSettingToggled) {
         Graphics2D g2d = emblemImage.createGraphics();
-        g2d.setPaint(Color.white);
-        g2d.fillRect(0, 0, PIXELS, PIXELS);
         sourceImage = resize(sourceImage);
 
         for (int i=0; i<PIXELS; i++) {
             for (int j=0; j<PIXELS; j++) {
                 int rgb = sourceImage.getRGB(i,j);
-                Color pixelColor = new Color(rgb);
-                g2d.setPaint(getColorForEmblemPixel(pixelColor, colorSettingToggled));
-                g2d.fillRect(i, j,1,1);
+                Color pixelColor = new Color(rgb, true);
+                Color emblemPixelColor = getColorForEmblemPixel(pixelColor, colorSettingToggled);
+
+                if (emblemPixelColor != null) {
+                    g2d.setPaint(emblemPixelColor);
+                    g2d.fillRect(i, j, 1, 1);
+                }
             }
         }
 
@@ -86,6 +96,10 @@ public class EmblemCreator {
     private Color getColorForEmblemPixel(Color pixelColor, ArrayList<JCheckBox> colorSettingToggled) {
         Color closestColor = null;
         double distanceOfClosestColor = Double.MAX_VALUE;
+
+        if (pixelColor.getAlpha() == 0) {
+            return null;
+        }
         
         for (int i = 0; i<EmblemConstants.COLORS.length; i++) {
             double distance = distanceFormula(pixelColor, EmblemConstants.COLORS[i]);
