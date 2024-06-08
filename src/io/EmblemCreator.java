@@ -7,12 +7,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class EmblemCreator {
 
     private static final int PIXELS = 32;
     private int backgroundColorIndex;
+    private int[][] pixelColors = new int[PIXELS][PIXELS];
 
     public BufferedImage createEmblem(String imagePath, ArrayList<JCheckBox> colorSettingToggled, JComboBox transparentBackgroundColor) {
         BufferedImage sourceImage = null; //source image
@@ -70,16 +74,53 @@ public class EmblemCreator {
             for (int j=0; j<PIXELS; j++) {
                 int rgb = sourceImage.getRGB(i,j);
                 Color pixelColor = new Color(rgb, true);
-                Color emblemPixelColor = getColorForEmblemPixel(pixelColor, colorSettingToggled);
+                Color emblemPixelColor = getColorForEmblemPixel(pixelColor, colorSettingToggled, i, j);
 
                 if (emblemPixelColor != null) {
                     g2d.setPaint(emblemPixelColor);
                     g2d.fillRect(i, j, 1, 1);
                 }
+                else {
+                    pixelColors[i][j] = 15;
+                }
             }
         }
 
+        writePixelColorsToFile(emblemImage);
         return emblemImage;
+    }
+
+    private void writePixelColorsToFile(BufferedImage emblemImage) {
+        PrintWriter outputStream = null;
+
+        try {
+            outputStream = new PrintWriter( new FileOutputStream("emblemPixelColors.txt"));
+        }
+        catch (FileNotFoundException f) {
+            System.out.println("File does not exist");
+            System.exit(0);
+        }
+
+        for (int i=0; i<EmblemConstants.COLOR_NAMES.length; i++) {
+            outputStream.println(i + "=" + EmblemConstants.COLOR_NAMES[i]);
+        }
+
+        outputStream.println();
+
+        for (int i=0; i<PIXELS; i++) {
+            for (int j=0; j<PIXELS; j++) {
+                int pixelColor = pixelColors[j][i];
+                if (pixelColor > 9) {
+                    outputStream.print(pixelColor + " ");
+                }
+                else {
+                    outputStream.print(pixelColor + "  ");
+                }
+            }
+            outputStream.println();
+        }
+
+        outputStream.close();
     }
 
     private static BufferedImage resize(BufferedImage img) {
@@ -93,7 +134,7 @@ public class EmblemCreator {
         return resized;
     }
 
-    private Color getColorForEmblemPixel(Color pixelColor, ArrayList<JCheckBox> colorSettingToggled) {
+    private Color getColorForEmblemPixel(Color pixelColor, ArrayList<JCheckBox> colorSettingToggled, int row, int column) {
         Color closestColor = null;
         double distanceOfClosestColor = Double.MAX_VALUE;
 
@@ -106,6 +147,7 @@ public class EmblemCreator {
             if (distance < distanceOfClosestColor && colorSettingToggled.get(i).isSelected()) {
                 closestColor = EmblemConstants.COLORS[i];
                 distanceOfClosestColor = distance;
+                pixelColors[row][column] = i;
             }
         }
 
