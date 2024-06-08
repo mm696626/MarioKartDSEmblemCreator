@@ -26,7 +26,7 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
     private String imagePath = "";
     private ArrayList<JLabel> colorSettingsLabels;
     private ArrayList<JCheckBox> colorSettingToggled;
-    private JButton generateEmblem, cropAndGenerateEmblem;
+    private JButton generateEmblem, cropAndGenerateEmblem, disableAllColors, enableAllColors;
     private JComboBox transparentBackgroundColor;
 
     public MarioKartDSEmblemCreatorUI()
@@ -50,7 +50,7 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
         mainMenuPanel.setLayout(mainMenuGridLayout);
 
         JPanel colorSettingsPanel = new JPanel();
-        GridLayout colorSettingsGridLayout = new GridLayout(EmblemConstants.COLORS.length + 1,2);
+        GridLayout colorSettingsGridLayout = new GridLayout(EmblemConstants.COLORS.length + 2,2);
         colorSettingsPanel.setLayout(colorSettingsGridLayout);
 
         generateEmblem = new JButton("Select Image for Emblem");
@@ -80,9 +80,16 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
         transparentBackgroundColor.addActionListener(e -> updateColorSettings());
         colorSettingsPanel.add(transparentBackgroundColor);
 
+        enableAllColors = new JButton("Enable All Colors");
+        enableAllColors.addActionListener(this);
+        colorSettingsPanel.add(enableAllColors);
+
+        disableAllColors = new JButton("Disable All Colors");
+        disableAllColors.addActionListener(this);
+        colorSettingsPanel.add(disableAllColors);
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.add("Generate Folder", mainMenuPanel);
+        tabbedPane.add("Create Emblem", mainMenuPanel);
         tabbedPane.add("Change Color Settings", colorSettingsPanel);
         add(tabbedPane);
     }
@@ -136,6 +143,20 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
                 return;
             }
 
+        }
+
+        if (e.getSource() == disableAllColors) {
+            for (int i=0; i<colorSettingToggled.size(); i++) {
+                colorSettingToggled.get(i).setSelected(false);
+                updateColorSettings();
+            }
+        }
+
+        if (e.getSource() == enableAllColors) {
+            for (int i=0; i<colorSettingToggled.size(); i++) {
+                colorSettingToggled.get(i).setSelected(true);
+                updateColorSettings();
+            }
         }
     }
 
