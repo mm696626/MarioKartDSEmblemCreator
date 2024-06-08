@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 public class ImageCropper extends JFrame implements MouseListener {
 
@@ -17,9 +18,14 @@ public class ImageCropper extends JFrame implements MouseListener {
     private int clickCounter = 0;
     private int[] coordinates = new int[4];
     private String imagePath = "";
+    private ArrayList<JCheckBox> colorSettingToggled;
+    private JComboBox transparentBackgroundColor;
 
-    public ImageCropper(String imagePath) {
+    public ImageCropper(String imagePath, ArrayList<JCheckBox> colorSettingToggled, JComboBox transparentBackgroundColor) {
         setTitle("Image Cropper");
+
+        this.colorSettingToggled = colorSettingToggled;
+        this.transparentBackgroundColor = transparentBackgroundColor;
 
         this.container = getContentPane();
         container.setLayout(new BorderLayout());
@@ -46,7 +52,7 @@ public class ImageCropper extends JFrame implements MouseListener {
         if (clickCounter == 0) {
             coordinates[0] = e.getX();
             coordinates[1] = e.getY();
-            JOptionPane.showMessageDialog(this, "First click detected! Now click the bottom right of your emblem image!");
+            JOptionPane.showMessageDialog(this, "First click detected! Now click the bottom right of your image!");
             clickCounter++;
         }
         else {
@@ -81,7 +87,7 @@ public class ImageCropper extends JFrame implements MouseListener {
         BufferedImage copyOfCroppedImage = copyCroppedImage(croppedImage, croppedImageWidth, croppedImageHeight);
 
         EmblemCreator emblemCreator = new EmblemCreator();
-        BufferedImage emblemImage = emblemCreator.createEmblem(copyOfCroppedImage);
+        BufferedImage emblemImage = emblemCreator.createEmblem(copyOfCroppedImage, colorSettingToggled, transparentBackgroundColor);
 
         if (emblemImage != null) {
             imagePath = imagePath.substring(0, imagePath.lastIndexOf("."));

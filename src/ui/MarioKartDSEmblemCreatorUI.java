@@ -1,5 +1,6 @@
 package ui;
 
+import constants.EmblemConstants;
 import io.EmblemCreator;
 
 import javax.imageio.ImageIO;
@@ -11,38 +12,79 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener {
 
 
     //where to get the image from
     private String imagePath = "";
-
+    private ArrayList<JLabel> colorSettingsLabels;
+    private ArrayList<JCheckBox> colorSettingToggled;
     private JButton generateEmblem, cropAndGenerateEmblem;
-
-    GridBagConstraints gridBagConstraints = null;
+    private JComboBox transparentBackgroundColor;
 
     public MarioKartDSEmblemCreatorUI()
     {
         setTitle("Mario Kart DS Emblem Creator");
+        generateUI();
+
+        File colorSettings = new File("colorSettings.txt");
+        if (colorSettings.exists()) {
+            loadSettingsOnStartUp();
+        }
+    }
+
+    private void generateUI() {
+
+        colorSettingsLabels = new ArrayList<>();
+        colorSettingToggled = new ArrayList<>();
+
+        JPanel mainMenuPanel = new JPanel();
+        GridLayout mainMenuGridLayout = new GridLayout(2, 1);
+        mainMenuPanel.setLayout(mainMenuGridLayout);
+
+        JPanel colorSettingsPanel = new JPanel();
+        GridLayout colorSettingsGridLayout = new GridLayout(EmblemConstants.COLORS.length + 1,2);
+        colorSettingsPanel.setLayout(colorSettingsGridLayout);
 
         generateEmblem = new JButton("Select Image for Emblem");
         generateEmblem.addActionListener(this);
+        mainMenuPanel.add(generateEmblem);
 
         cropAndGenerateEmblem = new JButton("Crop Image and Create Emblem");
         cropAndGenerateEmblem.addActionListener(this);
+        mainMenuPanel.add(cropAndGenerateEmblem);
 
 
-        setLayout(new GridBagLayout());
-        gridBagConstraints = new GridBagConstraints();
+        for (int i=0; i<EmblemConstants.COLORS.length; i++) {
+            JLabel jLabel = new JLabel(EmblemConstants.COLOR_NAMES[i]);
+            colorSettingsLabels.add(jLabel);
+            colorSettingsPanel.add(colorSettingsLabels.get(i));
+            JCheckBox jCheckBox = new JCheckBox();
+            jCheckBox.setSelected(true);
+            colorSettingToggled.add(jCheckBox);
+            colorSettingToggled.get(i).addActionListener(e -> updateColorSettings());
+            colorSettingsPanel.add(colorSettingToggled.get(i));
+        }
 
-        gridBagConstraints.gridx=0;
-        gridBagConstraints.gridy=0;
-        add(generateEmblem, gridBagConstraints);
+        JLabel transparentBackgroundColorLabel = new JLabel("Transparent Background Color");
+        colorSettingsPanel.add(transparentBackgroundColorLabel);
 
-        gridBagConstraints.gridx=1;
-        gridBagConstraints.gridy=0;
-        add(cropAndGenerateEmblem, gridBagConstraints);
+        transparentBackgroundColor = new JComboBox<>(EmblemConstants.COLOR_NAMES);
+        transparentBackgroundColor.addActionListener(e -> updateColorSettings());
+        colorSettingsPanel.add(transparentBackgroundColor);
+
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.add("Generate Folder", mainMenuPanel);
+        tabbedPane.add("Change Color Settings", colorSettingsPanel);
+        add(tabbedPane);
     }
 
     @Override
@@ -62,7 +104,7 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
             }
 
             EmblemCreator emblemCreator = new EmblemCreator();
-            BufferedImage emblem = emblemCreator.createEmblem(imagePath);
+            BufferedImage emblem = emblemCreator.createEmblem(imagePath, colorSettingToggled, transparentBackgroundColor);
 
             imagePath = imagePath.substring(0, imagePath.lastIndexOf("."));
             File emblemFile = new File(imagePath + "Emblem.png");
@@ -83,10 +125,10 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int response = fileChooser.showOpenDialog(null);
             if (response == JFileChooser.APPROVE_OPTION) {
-                JOptionPane.showMessageDialog(this, "Please click the top left of your emblem image");
+                JOptionPane.showMessageDialog(this, "Please click the top left of your image");
 
                 imagePath = fileChooser.getSelectedFile().getAbsolutePath();
-                ImageCropper imageCropper = new ImageCropper(imagePath);
+                ImageCropper imageCropper = new ImageCropper(imagePath, colorSettingToggled, transparentBackgroundColor);
                 imageCropper.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                 imageCropper.pack();
                 imageCropper.setVisible(true);
@@ -95,5 +137,57 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
             }
 
         }
+    }
+
+    private void updateColorSettings() {
+        PrintWriter outputStream = null;
+
+        try {
+            outputStream = new PrintWriter( new FileOutputStream("colorSettings.txt"));
+        }
+        catch (FileNotFoundException f) {
+            System.out.println("File does not exist");
+            System.exit(0);
+        }
+
+        for (int i=0; i<EmblemConstants.COLORS.length; i++) {
+            outputStream.println(EmblemConstants.COLOR_NAMES[i] + "=" + colorSettingToggled.get(i).isSelected());
+        }
+
+        outputStream.println("Transparent Background Color" + "=" + EmblemConstants.COLOR_NAMES[transparentBackgroundColor.getSelectedIndex()]);
+        outputStream.close();
+    }
+
+    private void loadSettingsOnStartUp() {
+        Scanner inputStream = null;
+        try {
+            inputStream = new Scanner(new FileInputStream("colorSettings.txt"));
+        } catch (FileNotFoundException e) {
+            return;
+        }
+
+        int index = 0;
+
+        while (inputStream.hasNextLine()) {
+            String line = inputStream.nextLine();
+
+            if (index < EmblemConstants.COLOR_NAMES.length && line.contains(EmblemConstants.COLOR_NAMES[index])) {
+                String settingValue = line.split("=")[1];
+                colorSettingToggled.get(index).setSelected(Boolean.parseBoolean(settingValue));
+                index++;
+            }
+
+            else if (line.contains("Transparent Background Color")) {
+                String settingValue = line.split("=")[1];
+                for (int i=0; i<EmblemConstants.COLOR_NAMES.length; i++) {
+                    if (settingValue.equals(EmblemConstants.COLOR_NAMES[i])) {
+                        transparentBackgroundColor.setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
+        }
+
+        inputStream.close();
     }
 }

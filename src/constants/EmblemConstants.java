@@ -2,7 +2,7 @@ package constants;
 
 import java.awt.*;
 
-public class EmblemColors {
+public class EmblemConstants {
 
     //The order of the colors in the file is the same as on the MKDS Emblem Editor
     //The color RGB values have been gathered by a color picker on a screenshot
@@ -24,4 +24,5 @@ public class EmblemColors {
     public static final Color YELLOW = new Color(251, 250, 84);
 
     public static final Color[] COLORS = {LIGHT_GREEN, BLACK, DARK_GREEN, WHITE, CYAN, GRAY, BLUE, BROWN, PURPLE, RED, MAGENTA, ORANGE, PINK, TAN, YELLOW};
+    public static final String[] COLOR_NAMES = {"Light Green", "Black", "Dark Green", "White", "Cyan", "Gray", "Blue", "Brown", "Purple", "Red", "Magenta", "Orange", "Pink", "Tan", "Yellow"};
 }
