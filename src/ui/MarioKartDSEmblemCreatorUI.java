@@ -77,6 +77,7 @@ public class MarioKartDSEmblemCreatorUI extends JFrame implements ActionListener
         colorSettingsPanel.add(transparentBackgroundColorLabel);
 
         transparentBackgroundColor = new JComboBox<>(EmblemConstants.COLOR_NAMES);
+        transparentBackgroundColor.setSelectedIndex(15);
         transparentBackgroundColor.addActionListener(e -> updateColorSettings());
         colorSettingsPanel.add(transparentBackgroundColor);
 

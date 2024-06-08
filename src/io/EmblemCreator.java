@@ -86,11 +86,11 @@ public class EmblemCreator {
             }
         }
 
-        writePixelColorsToFile(emblemImage);
+        writePixelColorsToFile();
         return emblemImage;
     }
 
-    private void writePixelColorsToFile(BufferedImage emblemImage) {
+    private void writePixelColorsToFile() {
         PrintWriter outputStream = null;
 
         try {
